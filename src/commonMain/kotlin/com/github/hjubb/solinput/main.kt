@@ -33,6 +33,7 @@ fun main(args: Array<String>) {
         // any Json config here
     }.encodeToString(sol)
     File("solc-input.json").write(append = false).write(solString.toByteBufferUTF8())
+    println("file written to: solc-input.json")
 }
 
 fun process(files: List<WrappedFile>): BigSolInput {
