@@ -68,14 +68,17 @@ fun process(files: List<WrappedFile>): BigSolInput {
 
 fun collectFiles(dir: File): List<WrappedFile> {
     val files = mutableListOf<WrappedFile>()
-    val regex = Regex("(?:\\.[\\\\|/])?([\\w|/\\\\]+\\.sol)")
+    val regex = Regex("(?:\\.[\\\\|/])?([\\w|\\W]+\\.sol)")
     for (file in dir.iterator()) {
+        println("$file")
         if (file.isDirectory) {
             files += collectFiles(file)
         }
         regex.matchEntire(file.path)?.groups?.get(1)?.let { matchGroup ->
             val path = matchGroup.value
-            files += WrappedFile(path, file)
+            if (!path.endsWith(".t.sol")) {
+                files += WrappedFile(path, file)
+            }
         }
     }
     return files
