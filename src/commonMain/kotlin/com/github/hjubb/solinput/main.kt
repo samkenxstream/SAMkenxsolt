@@ -2,6 +2,7 @@ package com.github.hjubb.solinput
 
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
+import kotlinx.cli.default
 import kotlinx.cli.required
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Polymorphic
@@ -26,9 +27,11 @@ import pw.binom.toByteBufferUTF8
 fun main(args: Array<String>) {
     val parser = ArgParser("sol-input")
     val dir by parser.option(ArgType.String, shortName = "d", description = "root directory for file search").required()
+    val optimized by parser.option(ArgType.Boolean, shortName = "opt", description = "flag for whether to enable optimization").default(true)
+    val runs by parser.option(ArgType.Int, shortName = "r", description = "how many runs to include in optimization").default(200)
     parser.parse(args)
     val files = collectFiles(getDir(dir))
-    val sol = process(files)
+    val sol = process(files, optimized, runs)
     val solString = Json {
         // any Json config here
     }.encodeToString(sol)
@@ -36,7 +39,7 @@ fun main(args: Array<String>) {
     println("file written to: solc-input.json")
 }
 
-fun process(files: List<WrappedFile>): BigSolInput {
+fun process(files: List<WrappedFile>, optimized: Boolean, runs: Int): BigSolInput {
     val content = files.asSequence().associate { it.path to it.getContent() }
     return BigSolInput(language = "Solidity",
             sources = content,
@@ -44,10 +47,12 @@ fun process(files: List<WrappedFile>): BigSolInput {
                 put("metadata", buildJsonObject {
                     put("useLiteralContent", true)
                 })
-                put("optimizer", buildJsonObject {
-                    put("enabled", true)
-                    put("runs", 200)
-                })
+                if (optimized) {
+                    put("optimizer", buildJsonObject {
+                        put("enabled", true)
+                        put("runs", runs)
+                    })
+                }
                 put("outputSelection", buildJsonObject {
                     put("*", buildJsonObject {
                         put("*", buildJsonArray {
