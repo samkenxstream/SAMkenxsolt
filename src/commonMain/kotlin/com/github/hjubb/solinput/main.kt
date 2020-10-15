@@ -70,13 +70,13 @@ fun collectFiles(dir: File): List<WrappedFile> {
     val files = mutableListOf<WrappedFile>()
     val regex = Regex("(?:\\.[\\\\|/])?([\\w|\\W]+\\.sol)")
     for (file in dir.iterator()) {
-        println("$file")
         if (file.isDirectory) {
             files += collectFiles(file)
         }
         regex.matchEntire(file.path)?.groups?.get(1)?.let { matchGroup ->
             val path = matchGroup.value
             if (!path.endsWith(".t.sol")) {
+                println("collecting: $file")
                 files += WrappedFile(path, file)
             }
         }
