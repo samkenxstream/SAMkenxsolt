@@ -29,7 +29,7 @@ solc-sjw --dir <contracts-dir>
 A new file called `solc-input.json` should appear. You can upload this file to [etherscan](https://etherscan.io) and verify it via the `standard json-input` method.
 
 ### Usage
-`solc-sjw --dir [base-directory] [--optimized [--runs num]]`
+`solc-sjw --dir [base-directory] [--no-optimization] [--runs num]`
 
 where
 * `--dir` `-d` *(required)* is the base directory
