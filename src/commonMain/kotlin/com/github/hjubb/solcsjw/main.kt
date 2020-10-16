@@ -18,8 +18,9 @@ fun main(args: Array<String>) {
     val dir by parser.option(ArgType.String, shortName = "d", description = "root directory for file search").required()
     val optimized by parser.option(ArgType.Boolean, shortName = "opt", description = "flag for whether to enable optimization").default(true)
     val runs by parser.option(ArgType.Int, shortName = "r", description = "how many runs to include in optimization").default(200)
+    val testExt by parser.option(ArgType.String, shortName = "t", description = "test file extension ending, default '.t.sol'").default(".t.sol")
     parser.parse(args)
-    val files = collectFiles(getDir(dir))
+    val files = collectFiles(getDir(dir), testExt)
     val sol = process(files, optimized, runs)
     val solString = Json {
         // any Json config here
@@ -60,16 +61,16 @@ fun process(files: List<WrappedFile>, optimized: Boolean, runs: Int): BigSolInpu
     )
 }
 
-fun collectFiles(dir: File): List<WrappedFile> {
+fun collectFiles(dir: File, testExt: String): List<WrappedFile> {
     val files = mutableListOf<WrappedFile>()
     val regex = Regex("(?:\\.[\\\\|/])?([\\w|\\W]+\\.sol)")
     for (file in dir.iterator()) {
         if (file.isDirectory) {
-            files += collectFiles(file)
+            files += collectFiles(file, testExt)
         }
         regex.matchEntire(file.path)?.groups?.get(1)?.let { matchGroup ->
             val path = matchGroup.value
-            if (!path.endsWith(".t.sol")) {
+            if (!path.endsWith(testExt)) {
                 println("collecting: $file")
                 files += WrappedFile(path, file)
             }
