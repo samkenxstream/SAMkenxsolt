@@ -16,12 +16,12 @@ import pw.binom.toByteBufferUTF8
 fun main(args: Array<String>) {
     val parser = ArgParser("solc-sjw")
     val dir by parser.option(ArgType.String, shortName = "d", description = "root directory for file search").required()
-    val optimized by parser.option(ArgType.Boolean, shortName = "opt", description = "flag for whether to enable optimization").default(true)
+    val `no-optimization` by parser.option(ArgType.Boolean, shortName = "no-opt", description = "flag for whether to disable optimization").default(false)
     val runs by parser.option(ArgType.Int, shortName = "r", description = "how many runs to include in optimization").default(200)
-    val testExt by parser.option(ArgType.String, shortName = "t", description = "test file extension ending, default '.t.sol'").default(".t.sol")
+    val `test-ext` by parser.option(ArgType.String, shortName = "t", description = "test file extension ending").default(".t.sol")
     parser.parse(args)
-    val files = collectFiles(getDir(dir), testExt)
-    val sol = process(files, optimized, runs)
+    val files = collectFiles(getDir(dir), `test-ext`)
+    val sol = process(files, `no-optimization`, runs)
     val solString = Json {
         // any Json config here
     }.encodeToString(sol)
@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
     println("file written to: solc-input.json")
 }
 
-fun process(files: List<WrappedFile>, optimized: Boolean, runs: Int): BigSolInput {
+fun process(files: List<WrappedFile>, nonOptimized: Boolean, runs: Int): BigSolInput {
     val content = files.asSequence().associate { it.path to it.getContent() }
     return BigSolInput(language = "Solidity",
             sources = content,
@@ -37,7 +37,7 @@ fun process(files: List<WrappedFile>, optimized: Boolean, runs: Int): BigSolInpu
                 put("metadata", buildJsonObject {
                     put("useLiteralContent", true)
                 })
-                if (optimized) {
+                if (!nonOptimized) {
                     put("optimizer", buildJsonObject {
                         put("enabled", true)
                         put("runs", runs)
