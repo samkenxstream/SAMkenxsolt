@@ -9,5 +9,5 @@ CLI tool to help you build a `solc --standard-json` compatible file for verifyin
 where
 * `--dir` `-d` *(required)* is the base directory
 * `--no-optimization` `-no-opt` *(optional)* flag for whether to exclude optimization in the output
-* `--runs` `-r` *(optional)* number of optimization runs, only used if optimization is enabled
+* `--runs` `-r` *(optional)* number of optimization runs, only used if optimization is enabled, by default 200
 * `--test-ext` `-t` *(optional)* file extension for testing solidity files, by default `.t.sol`
