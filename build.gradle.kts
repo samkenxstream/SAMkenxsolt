@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform") version "1.4.10"
     kotlin("plugin.serialization") version "1.4.10"
 }
-group = "com.github.hjubb.solinput"
+group = "com.github.hjubb.solcsjw"
 version = "0.1.0"
 
 repositories {
@@ -18,7 +18,7 @@ kotlin {
     macosX64 {
         binaries {
             executable {
-                entryPoint = "com.github.hjubb.solinput.main"
+                entryPoint = "com.github.hjubb.solcsjw.main"
             }
         }
     }
@@ -26,7 +26,7 @@ kotlin {
     linuxX64 {
         binaries {
             executable {
-                entryPoint = "com.github.hjubb.solinput.main"
+                entryPoint = "com.github.hjubb.solcsjw.main"
             }
         }
     }
@@ -34,7 +34,7 @@ kotlin {
     mingwX64 {
         binaries {
             executable {
-                entryPoint = "com.github.hjubb.solinput.main"
+                entryPoint = "com.github.hjubb.solcsjw.main"
             }
         }
     }

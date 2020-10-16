@@ -1,23 +1,12 @@
-package com.github.hjubb.solinput
+package com.github.hjubb.solcsjw
 
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
-import kotlinx.serialization.modules.polymorphic
-import pw.binom.ByteBuffer
-import pw.binom.ByteBufferPool
-import pw.binom.Input
-import pw.binom.io.AsyncBufferedOutput
 import pw.binom.io.BufferedInput
 import pw.binom.io.file.*
 import pw.binom.io.readText
@@ -25,7 +14,7 @@ import pw.binom.io.utf8Reader
 import pw.binom.toByteBufferUTF8
 
 fun main(args: Array<String>) {
-    val parser = ArgParser("sol-input")
+    val parser = ArgParser("solc-sjw")
     val dir by parser.option(ArgType.String, shortName = "d", description = "root directory for file search").required()
     val optimized by parser.option(ArgType.Boolean, shortName = "opt", description = "flag for whether to enable optimization").default(true)
     val runs by parser.option(ArgType.Int, shortName = "r", description = "how many runs to include in optimization").default(200)

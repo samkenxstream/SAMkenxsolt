@@ -1,3 +1,3 @@
 
-rootProject.name = "sol-input"
+rootProject.name = "solc-sjw"
 
