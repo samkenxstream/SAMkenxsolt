@@ -1,9 +1,6 @@
 package com.github.hjubb.solcsjw
 
-import kotlinx.cli.ArgParser
-import kotlinx.cli.ArgType
-import kotlinx.cli.default
-import kotlinx.cli.required
+import kotlinx.cli.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
@@ -18,9 +15,16 @@ fun main(args: Array<String>) {
     val dir by parser.option(ArgType.String, shortName = "d", description = "root directory for file search").required()
     val `no-optimization` by parser.option(ArgType.Boolean, shortName = "no-opt", description = "flag for whether to disable optimization").default(false)
     val runs by parser.option(ArgType.Int, shortName = "r", description = "how many runs to include in optimization").default(200)
-    val `test-ext` by parser.option(ArgType.String, shortName = "t", description = "test file extension ending").default(".t.sol")
-    parser.parse(args)
-    val files = collectFiles(getDir(dir), `test-ext`)
+    val `ignore-ext` by parser.option(ArgType.String, shortName = "i", description = "test file extension ending to ignore").default(".t.sol")
+
+    try {
+        parser.parse(args)
+    } catch (e: Exception) {
+        println(e.message)
+        return
+    }
+
+    val files = collectFiles(getDir(dir), `ignore-ext`)
     val sol = process(files, `no-optimization`, runs)
     val solString = Json {
         // any Json config here
