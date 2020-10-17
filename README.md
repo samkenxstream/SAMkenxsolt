@@ -1,6 +1,24 @@
 # solc-sjw
 ### solc standard json writer
 
+### Install
+
+#### Linux
+```bash
+wget https://github.com/hjubb/solc-sjw/releases/download/v0.2.0/solc-sjw-linux-x64 -O ~/.local/bin/solc-sjw
+chmod +x ~/.local/bin/solc-sjw
+```
+
+### Usage
+`solc-sjw --dir [base-directory] [--no-optimization] [--runs num]`
+
+where
+* `--dir` `-d` *(required)* is the base directory
+* `--no-optimization` `-no-opt` *(optional)* flag for whether to exclude optimization in the output
+* `--runs` `-r` *(optional)* number of optimization runs, only used if optimization is enabled, by default 200
+* `--ignore-ext` `-i` *(optional)* ignore files with the file extension, by default `.t.sol`
+
+
 ### Context
 
 CLI tool to help you generate a `solc --standard-json` compatible file to **deterministically** verify deployed contracts on [etherscan](https://etherscan.io).
@@ -27,12 +45,3 @@ solc-sjw --dir <contracts-dir>
 ```
 
 A new file called `solc-input.json` should appear. You can upload this file to [etherscan](https://etherscan.io) and verify it via the `standard json-input` method.
-
-### Usage
-`solc-sjw --dir [base-directory] [--no-optimization] [--runs num]`
-
-where
-* `--dir` `-d` *(required)* is the base directory
-* `--no-optimization` `-no-opt` *(optional)* flag for whether to exclude optimization in the output
-* `--runs` `-r` *(optional)* number of optimization runs, only used if optimization is enabled, by default 200
-* `--test-ext` `-t` *(optional)* exclude test files with the file extension, by default `.t.sol`
