@@ -10,13 +10,14 @@ chmod +x ~/.local/bin/solc-sjw
 ```
 
 ### Usage
-`solc-sjw --dir [base-directory] [--no-optimization] [--runs num]`
+`solc-sjw --dir [base-directory] [--no-optimization] [--runs num] [--ignore-ext extension to ignore] [--truffle]`
 
 where
 * `--dir` `-d` *(required)* is the base directory
 * `--no-optimization` `-no-opt` *(optional)* flag for whether to exclude optimization in the output
-* `--runs` `-r` *(optional)* number of optimization runs, only used if optimization is enabled, by default 200
+* `--runs` `-r` *(optional)* number of optimization runs, only used when optimizing, by default 200
 * `--ignore-ext` `-i` *(optional)* ignore files with the file extension, by default `.t.sol`
+* `--truffle` *(optional)* attempts to resolve npm installed dependencies referenced by your contracts
 
 
 ### Context
