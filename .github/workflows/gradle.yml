@@ -4,14 +4,20 @@
 name: Build
 
 on:
-  push:
-    tags:
-      - '*'
+#   push:
+#     tags:
+#       - '*' 
+  workflow_dispatch:
+    inputs:
+      machine:
+        description: 'Machine to run on'     
+        required: true
+        default: 'macos-latest'
 
 jobs:
   build:
 
-    runs-on: windows-2019
+    runs-on: ${{ github.event.inputs.machine }}
 
     steps:
     - uses: actions/checkout@v2
