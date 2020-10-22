@@ -5,7 +5,7 @@
 
 #### Linux
 ```bash
-wget https://github.com/hjubb/solc-sjw/releases/download/v0.2.0/solc-sjw-linux-x64 -O ~/.local/bin/solc-sjw
+wget https://github.com/hjubb/solc-sjw/releases/download/v0.3.0/solc-sjw-linux-x64 -O ~/.local/bin/solc-sjw
 chmod +x ~/.local/bin/solc-sjw
 ```
 
