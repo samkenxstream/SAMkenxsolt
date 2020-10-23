@@ -43,8 +43,8 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
-                api("pw.binom.io:file:0.1.21")
-                api("pw.binom.io:core:0.1.21")
+                api("pw.binom.io:file:0.1.22")
+                api("pw.binom.io:core:0.1.22")
             }
         }
         val commonTest by getting
