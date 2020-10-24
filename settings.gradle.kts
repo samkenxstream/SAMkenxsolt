@@ -1,3 +1,3 @@
 
-rootProject.name = "solc-sjw"
+rootProject.name = "solt"
 

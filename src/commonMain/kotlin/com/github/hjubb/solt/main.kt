@@ -1,4 +1,4 @@
-package com.github.hjubb.solcsjw
+package com.github.hjubb.solt
 
 import kotlinx.cli.*
 import kotlinx.serialization.Serializable
@@ -12,7 +12,7 @@ val truffleRegex = Regex("import\\s+?(?:(?:(?:[\\w*\\s{},]*)\\s+from\\s+?)|)(?:[
 val relativeRegex = Regex("import\\s+?(?:(?:(?:[\\w*\\s{},]*)\\s+from\\s+?)|)(?:[\"|'](.*?)[\"|'])[\\s]*?(?:;|\$|)")
 
 fun main(args: Array<String>) {
-    val parser = ArgParser("solc-sjw")
+    val parser = ArgParser("solt")
     val dir by parser.option(ArgType.String, shortName = "d", description = "root directory for file search").required()
     val nonOptimized by parser.option(
         ArgType.Boolean,
