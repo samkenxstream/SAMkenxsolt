@@ -31,7 +31,7 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v2.2.0
       with:
-        name: build -Pvar=${{ secrets.TEST }}
+        name: build -Pether=${{ secrets.ETHER_API }} -Pinfura=${{ secrets.INFURA_API }}
         path:
           build/bin
         if-no-files-found: 
