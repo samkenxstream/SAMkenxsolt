@@ -23,11 +23,11 @@ jobs:
           java-version: 11
       - uses: eskatos/gradle-command-action@v1
         with:
-          arguments: build
+          arguments: macosX64Binaries -Pether=${{ secrets.ETHER_API }} -Pinfura=${{ secrets.INFURA_API }}
       - name: Upload Artifact
         uses: actions/upload-artifact@v2.2.0
         with:
-          name: macosX64Binaries -Pether=${{ secrets.ETHER_API }} -Pinfura=${{ secrets.INFURA_API }}
+          name: build
           path:
             build/bin
           if-no-files-found: 
