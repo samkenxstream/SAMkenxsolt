@@ -11,7 +11,7 @@ group = "com.github.hjubb"
 version = "0.4.0"
 
 val binomVersion = "0.1.22"
-val ktor_version = "1.4.0"
+val ktor_version = "1.4.1"
 val coroutineVersion = "1.3.9-native-mt-2"
 
 repositories {
@@ -61,11 +61,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-curl:$ktor_version")
                 implementation("io.ktor:ktor-client-json:$ktor_version")
                 implementation("io.ktor:ktor-client-serialization:$ktor_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion") {
-                    version {
-                        strictly(coroutineVersion)
-                    }
-                }
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
             }
         }
         val commonTest by getting

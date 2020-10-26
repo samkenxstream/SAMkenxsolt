@@ -7,6 +7,7 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.*
+import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlinx.cli.*
 import kotlinx.coroutines.delay
@@ -17,6 +18,7 @@ import pw.binom.io.file.read
 import pw.binom.io.readText
 import pw.binom.io.use
 import pw.binom.io.utf8Reader
+import pw.binom.neverFreeze
 
 @ExperimentalCli
 class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP API") {

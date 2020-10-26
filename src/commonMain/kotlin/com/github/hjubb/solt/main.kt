@@ -1,5 +1,6 @@
 package com.github.hjubb.solt
 
+import io.ktor.utils.io.*
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ExperimentalCli
 
