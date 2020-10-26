@@ -1,11 +1,17 @@
 # solc-sjw
 ### solc standard json writer
+Latest version: ![GitHub tag (latest SemVer pre-release)](https://img.shields.io/github/v/tag/hjubb/solc-sjw?include_prereleases)
 
 ### Install
 
 #### Linux
 ```bash
 wget https://github.com/hjubb/solc-sjw/releases/download/v0.3.0/solc-sjw-linux-x64 -O ~/.local/bin/solc-sjw
+chmod +x ~/.local/bin/solc-sjw
+```
+#### Mac OS
+```bash
+wget https://github.com/hjubb/solt/releases/download/v0.3.0/solc-sjw-macos-x64 -O ~/.local/bin/solc-sjw
 chmod +x ~/.local/bin/solc-sjw
 ```
 
