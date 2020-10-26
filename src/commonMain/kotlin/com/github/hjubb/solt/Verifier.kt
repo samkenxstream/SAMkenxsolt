@@ -203,6 +203,3 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
     }
 }
 
-expect class Executor() {
-    fun execute(verifier: suspend () -> Unit)
-}

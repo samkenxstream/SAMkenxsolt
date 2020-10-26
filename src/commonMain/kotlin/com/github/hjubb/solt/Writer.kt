@@ -33,6 +33,13 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
         description = "flag for whether this project uses npm style imports (node_modules)"
     ).default(false)
 
+    private val outputFile by option(
+        ArgType.String,
+        fullName = "output",
+        shortName = "o",
+        description = "file to write your standard json output to"
+    )
+
     override fun execute() {
 
         val current = File(".${File.SEPARATOR}")
@@ -51,7 +58,9 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
         val solString = Json {
             // any Json config here
         }.encodeToString(sol)
-        val filename = "solc-input-${initial.nameWithoutExtension.toLowerCase()}.json"
+
+        // get the output file's name
+        val filename = outputFile ?: "solc-input-${initial.nameWithoutExtension.toLowerCase()}.json"
         File(filename).write(append = false).use { channel ->
             channel.write(solString.toByteBufferUTF8())
         }
