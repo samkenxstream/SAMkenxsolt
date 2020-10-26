@@ -46,12 +46,12 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
         val initial = current.relative(file) // hack to get always "./" type path
         val baseFolder = initial.path.stripLeadingSeparator().substringBefore(File.SEPARATOR)
 
-        val files = collectFiles(baseFolder, initial)
+        val files = collectFiles(baseFolder, initial, mutableSetOf())
 
         val deps = if (isNpm) {
-            collectDeps(files.toSet())
+            collectDeps(files.toSet(), mutableSetOf())
         } else {
-            emptyList()
+            emptySet()
         }
 
         val sol = process(files + deps, nonOptimized, runs)
@@ -102,7 +102,7 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
         )
     }
 
-    fun collectDeps(files: Set<WrappedFile>): Set<WrappedFile> {
+    fun collectDeps(files: Set<WrappedFile>, deps: MutableSet<WrappedFile>): Set<WrappedFile> {
         return files.flatMap {
             val lines = it.getContent().content.lineSequence()
             lines.mapNotNull { line ->
@@ -112,12 +112,22 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
                     val collected = WrappedFile(group.value, File("node_modules" + File.SEPARATOR + group.value))
                     collected
                 }
-                setOf(collected) + collectDeps("node_modules", collected, false)
+                if (deps.contains(collected)) {
+                    deps
+                } else {
+                    deps += collected
+                    collectDeps("node_modules", collected, false, deps)
+                }
             }
         }.toSet()
     }
 
-    fun collectDeps(base: String, file: WrappedFile, includeBase: Boolean): Set<WrappedFile> {
+    fun collectDeps(
+        base: String,
+        file: WrappedFile,
+        includeBase: Boolean,
+        fileSet: MutableSet<WrappedFile>
+    ): Set<WrappedFile> {
         val lines = file.getContent().content.lineSequence()
         return lines.mapNotNull { line ->
             relativeRegex.matchEntire(line)
@@ -132,14 +142,19 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
                 val collected = WrappedFile(basedPath, relativeFile)
                 collected
             }
-            setOf(collected) + collectDeps(base, collected, includeBase)
+            if (fileSet.contains(collected)) {
+                fileSet
+            } else {
+                fileSet += collected
+                collectDeps(base, collected, includeBase, fileSet)
+            }
         }.toSet()
     }
 
-    fun collectFiles(baseFolder: String, initial: File): MutableList<WrappedFile> {
+    fun collectFiles(baseFolder: String, initial: File, fileSet: MutableSet<WrappedFile>): MutableList<WrappedFile> {
         val wrapped = WrappedFile(initial.path, initial)
         val files = mutableListOf(wrapped)
-        files += collectDeps(baseFolder, wrapped, true)
+        files += collectDeps(baseFolder, wrapped, true, fileSet)
         return files
     }
 
