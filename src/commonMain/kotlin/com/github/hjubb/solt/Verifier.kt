@@ -7,7 +7,6 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.*
-import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlinx.cli.*
 import kotlinx.coroutines.delay
@@ -18,7 +17,6 @@ import pw.binom.io.file.read
 import pw.binom.io.readText
 import pw.binom.io.use
 import pw.binom.io.utf8Reader
-import pw.binom.neverFreeze
 
 @ExperimentalCli
 class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP API") {
@@ -64,7 +62,7 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
         fullName = "license",
         shortName = "l",
         description = "license according to etherscan, valid codes 1-12 where 1=No License .. 12=Apache 2.0, see https://etherscan.io/contract-license-types"
-    ).required()
+    )
 
     private val network by option(
         ArgType.String,
@@ -108,7 +106,7 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
                 throw Exception("please provide a valid address")
             }
 
-            if (licenseType !in 0..12) {
+            if (licenseType != null && licenseType !in 0..12) {
                 throw Exception("supported license types are 0 .. 12")
             }
 
@@ -169,7 +167,7 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
                     "contractaddress" to listOf(contractAddress),
                     "sourceCode" to listOf(input),
                     "codeformat" to listOf("solidity-standard-json-input"),
-                    "licenseType" to listOf(licenseType.toString()),
+                    "licenseType" to (licenseType?.let { listOf(it.toString()) } ?: listOf()),
                     "compilerversion" to listOf(selectedVersion),
                     "constructorArguements" to listOf(constructor),
                     "contractname" to listOf(contract)

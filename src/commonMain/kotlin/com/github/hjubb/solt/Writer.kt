@@ -46,28 +46,44 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
         val initial = current.relative(file) // hack to get always "./" type path
         val baseFolder = initial.path.stripLeadingSeparator().substringBefore(File.SEPARATOR)
 
-        val files = collectFiles(baseFolder, initial, mutableSetOf())
+        val unknowns = mutableSetOf<String>()
+        val fileSet = mutableSetOf<WrappedFile>()
+        collectFiles(baseFolder, initial, fileSet, unknowns)
+
+        if (unknowns.isNotEmpty() && !isNpm) {
+            println("${unknowns.size} unknown imports found, you might want to add the --npm flag")
+            return
+        }
+
+        val unknownNpm = mutableSetOf<String>()
 
         val deps = if (isNpm) {
-            collectDeps(files.toSet(), mutableSetOf())
+            collectDeps(fileSet, mutableSetOf(), unknownNpm)
         } else {
             emptySet()
         }
 
-        val sol = process(files + deps, nonOptimized, runs)
+        if (unknownNpm.isEmpty()) {
+            println("${unknowns.size} unknown imports found, re-search?")
+        }
+
+        val sol = process(fileSet + deps, nonOptimized, runs)
         val solString = Json {
             // any Json config here
         }.encodeToString(sol)
 
         // get the output file's name
-        val filename = outputFile ?: "solc-input-${initial.nameWithoutExtension.toLowerCase()}.json"
+        val filename = outputFile ?: "solc-input-${
+            if (initial.isDirectory) initial.name
+            else initial.nameWithoutExtension.toLowerCase()
+        }.json"
         File(filename).write(append = false).use { channel ->
             channel.write(solString.toByteBufferUTF8())
         }
         println("file written to: $filename")
     }
 
-    fun process(files: List<WrappedFile>, nonOptimized: Boolean, runs: Int): BigSolInput {
+    fun process(files: Set<WrappedFile>, nonOptimized: Boolean, runs: Int): BigSolInput {
         val content = files.asSequence().associate {
             println("collecting: ${it.path}")
             it.path to it.getContent()
@@ -102,7 +118,11 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
         )
     }
 
-    fun collectDeps(files: Set<WrappedFile>, deps: MutableSet<WrappedFile>): Set<WrappedFile> {
+    fun collectDeps(
+        files: Set<WrappedFile>,
+        deps: MutableSet<WrappedFile>,
+        unknowns: MutableSet<String>
+    ): Set<WrappedFile> {
         return files.flatMap {
             val lines = it.getContent().content.lineSequence()
             lines.mapNotNull { line ->
@@ -116,7 +136,7 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
                     deps
                 } else {
                     deps += collected
-                    collectDeps("node_modules", collected, false, deps)
+                    collectDeps("node_modules", collected, false, deps, unknowns)
                 }
             }
         }.toSet()
@@ -126,10 +146,16 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
         base: String,
         file: WrappedFile,
         includeBase: Boolean,
-        fileSet: MutableSet<WrappedFile>
+        fileSet: MutableSet<WrappedFile>,
+        unknowns: MutableSet<String>
     ): Set<WrappedFile> {
         val lines = file.getContent().content.lineSequence()
         return lines.mapNotNull { line ->
+            nodeRegex.matchEntire(line)?.let { node ->
+                node.groups[1]?.let { group ->
+                    unknowns += group.value
+                }
+            }
             relativeRegex.matchEntire(line)
         }.flatMap { result ->
             val collected = result.groups[1]!!.let { group ->
@@ -146,16 +172,28 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
                 fileSet
             } else {
                 fileSet += collected
-                collectDeps(base, collected, includeBase, fileSet)
+                collectDeps(base, collected, includeBase, fileSet, unknowns)
             }
         }.toSet()
     }
 
-    fun collectFiles(baseFolder: String, initial: File, fileSet: MutableSet<WrappedFile>): MutableList<WrappedFile> {
+    fun collectFiles(
+        baseFolder: String,
+        initial: File,
+        fileSet: MutableSet<WrappedFile>,
+        unknowns: MutableSet<String>
+    ) {
+        if (initial.isDirectory) {
+            initial.list().forEach {
+                collectFiles(baseFolder, it, fileSet, unknowns)
+            }
+            return
+        }
         val wrapped = WrappedFile(initial.path, initial)
-        val files = mutableListOf(wrapped)
-        files += collectDeps(baseFolder, wrapped, true, fileSet)
-        return files
+        if (!fileSet.add(wrapped)) {
+            return
+        }
+        collectDeps(baseFolder, wrapped, true, fileSet, unknowns)
     }
 
     fun File.relative(path: String): File =
