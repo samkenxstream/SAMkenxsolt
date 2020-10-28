@@ -47,7 +47,7 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
     private val contractName by argument(
         ArgType.String,
         fullName = "name",
-        description = "the contract's name as it appears in standard json input"
+        description = "the contract's name as it appears in standard json input, with an optional name mapping [name:mappedname]"
     )
 
     private val compilerVersion by option(
@@ -110,6 +110,24 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
                 throw Exception("supported license types are 0 .. 12")
             }
 
+            val (searchName, rename) = contractName.split(':').extractNames()
+
+            val input = file.read().use {
+                it.utf8Reader().readText()
+            }
+
+            val inputJson = Json.decodeFromString(BigSolInput.serializer(), input)
+
+            val foundContract = inputJson.sources.entries.firstOrNull { it.key.contains(searchName) }
+                ?: throw Exception("couldn't find $searchName in the json content")
+
+            val remappingName = if (rename.isNotBlank()) rename else foundContract.key.getSolidityName()
+            println("verifying ${foundContract.key} with name \"$remappingName\"")
+
+            val contractMapping = foundContract.let {
+                "${it.key}:$remappingName"
+            }
+
             // get available solc versions and try to match in etherscan format
             val versions = client.get<String>(SOLC_VERSION_URL)
             val selectedVersion = versions.lineSequence().firstOrNull {
@@ -148,16 +166,6 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
 
             println("constructor = $constructor")
 
-            val input = file.read().use {
-                it.utf8Reader().readText()
-            }
-
-            val inputJson = Json.decodeFromString(BigSolInput.serializer(), input)
-
-            val contract = inputJson.sources.map {
-                "${it.key}:${it.key.getSolidityName()}"
-            }.first { it.contains(contractName) }
-
             val guid = client.submitForm<EtherscanVerificationResult>(
                 etherscanUrl(network),
                 parametersOf(
@@ -170,7 +178,7 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
                     "licenseType" to (licenseType?.let { listOf(it.toString()) } ?: listOf()),
                     "compilerversion" to listOf(selectedVersion),
                     "constructorArguements" to listOf(constructor),
-                    "contractname" to listOf(contract)
+                    "contractname" to listOf(contractMapping)
                 )
             )
 
@@ -201,5 +209,11 @@ class Verifier : Subcommand("verify", "Verify the contracts via Etherscan's HTTP
 
         }
     }
+
+    fun List<String>.extractNames(): List<String> {
+        return if (size < 2) listOf(first(),"")
+        else take(2)
+    }
+
 }
 
