@@ -63,7 +63,7 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
             emptySet()
         }
 
-        if (!unknownNpm.isEmpty()) {
+        if (unknownNpm.isNotEmpty()) {
             println("${unknownNpm.size} unknown imports found, re-search?")
         }
 
