@@ -1,5 +1,6 @@
 package com.github.hjubb.solt
 
+import io.ktor.client.features.*
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.ExperimentalCli
@@ -26,10 +27,6 @@ fun main(args: Array<String>) {
             println("solt version: ${BuildKonfig.version}")
         }
     } catch (e: Exception) {
-        if (Environment.getEnv("DEBUG") != null) {
-            e.printStackTrace()
-        } else {
-            println(e.message)
-        }
+        println("${e::class.simpleName} ${e.message}")
     }
 }
