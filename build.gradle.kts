@@ -8,7 +8,8 @@ plugins {
 }
 
 group = "com.github.hjubb"
-version = "0.4.0"
+val versionString = "0.4.0"
+version = versionString
 
 val binomVersion = "0.1.22"
 val ktor_version = "1.4.1"
@@ -75,6 +76,7 @@ configure<BuildKonfigExtension> {
     val infura: String? by project
 
     defaultConfigs {
+        buildConfigField(FieldSpec.Type.STRING, "version", versionString)
         buildConfigField(FieldSpec.Type.STRING, "ether", ether ?: "apiKey")
         buildConfigField(FieldSpec.Type.STRING, "infura", infura ?: "apiKey")
     }

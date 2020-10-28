@@ -63,8 +63,8 @@ class Writer : Subcommand("write", "Generates a solc-input.json file for verific
             emptySet()
         }
 
-        if (unknownNpm.isEmpty()) {
-            println("${unknowns.size} unknown imports found, re-search?")
+        if (!unknownNpm.isEmpty()) {
+            println("${unknownNpm.size} unknown imports found, re-search?")
         }
 
         val sol = process(fileSet + deps, nonOptimized, runs)
