@@ -1,6 +1,6 @@
-# solc-sjw
-## solc standard json writer
-![Build](https://github.com/hjubb/solt/workflows/Build/badge.svg?branch=main) ![GitHub tag (latest SemVer pre-release)](https://img.shields.io/github/v/tag/hjubb/solc-sjw?include_prereleases)
+# solt
+## Solidity Tool
+![Build](https://github.com/hjubb/solt/workflows/Build/badge.svg?branch=main) ![GitHub tag (latest SemVer pre-release)](https://img.shields.io/github/v/tag/hjubb/solt?include_prereleases)
 
 CLI tool to help you do two things:
 
