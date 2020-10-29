@@ -9,9 +9,15 @@ CLI tool to help you do two things:
 
 ## Install
 
-### UNIX
+### Linux
 ```bash
-wget https://github.com/hjubb/solt/releases/latest/solt-linux-x64 -O ~/.local/bin/solt
+wget https://github.com/hjubb/solt/releases/latest/download/solt-linux-x64 -O ~/.local/bin/solt
+chmod +x ~/.local/bin/solt
+```
+
+### Mac
+```bash
+wget https://github.com/hjubb/solt/releases/latest/download/solt-mac -O ~/.local/bin/solt
 chmod +x ~/.local/bin/solt
 ```
 
