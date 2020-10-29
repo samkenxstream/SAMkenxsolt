@@ -7,32 +7,61 @@ on:
 #   push:
 #     tags:
 #       - '*' 
-  workflow_dispatch:
-    inputs:
-      machine:
-        description: 'Machine to run on'     
-        required: true
-        default: 'macos-latest'
+  workflow_dispatch
 
 jobs:
-  build:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.konan
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: clean macosX64Binaries -Pether=${{ secrets.ETHER_API }} -Pinfura=${{ secrets.INFURA_API }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2.2.0
+        with:
+          name: build
+          path:
+            build/bin
+          if-no-files-found: 
+            error
+  build-linux:
 
-    runs-on: ${{ github.event.inputs.machine }}
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-    - uses: eskatos/gradle-command-action@v1
-      with:
-        arguments: build
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2.2.0
-      with:
-        name: build -Pvar=${{ secrets.TEST }}
-        path:
-          build/bin
-        if-no-files-found: 
-          error
+      - uses: actions/checkout@v2
+      - run: sudo apt update && sudo apt-get install -y libcurl4-openssl-dev
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.konan
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: clean linuxX64Binaries -Pether=${{ secrets.ETHER_API }} -Pinfura=${{ secrets.INFURA_API }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2.2.0
+        with:
+          name: build
+          path:
+            build/bin
+          if-no-files-found: 
+            error
