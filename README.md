@@ -1,36 +1,75 @@
 # solc-sjw
-### solc standard json writer
-Latest version: ![GitHub tag (latest SemVer pre-release)](https://img.shields.io/github/v/tag/hjubb/solc-sjw?include_prereleases)
+## solc standard json writer
+![Build](https://github.com/hjubb/solt/workflows/Build/badge.svg?branch=main) ![GitHub tag (latest SemVer pre-release)](https://img.shields.io/github/v/tag/hjubb/solc-sjw?include_prereleases)
 
-### Install
+CLI tool to help you do two things:
 
-#### Linux
+1. Generate (`write`) a `solc --standard-json` compatible file **deterministically**
+2. Automatically verify (`verify`) a deployed contract on [etherscan](https://etherscan.io).
+
+## Install
+
+### UNIX
 ```bash
-wget https://github.com/hjubb/solc-sjw/releases/download/v0.3.0/solc-sjw-linux-x64 -O ~/.local/bin/solc-sjw
-chmod +x ~/.local/bin/solc-sjw
+wget https://github.com/hjubb/solt/releases/latest/solt-linux-x64 -O ~/.local/bin/solt
+chmod +x ~/.local/bin/solt
 ```
-#### Mac OS
+
+## API
+
+### Write
+
+Creates a `standard-json` compatible file.
+
+`solt write [directory or solidity file]`
+
+Optional flags
+* `--no-optimization` `-no-opt` Flag for whether to exclude optimization in the output
+* `--runs` `-r` [number] Number of optimization runs, only used when optimizing, by default 200
+* `--npm` Flag for whether this project uses npm style imports (node_modules)
+* `--output` [string] Output file name (defaults to solc-input-[file].json)
+* `--help` `-h` Usage info
+
+### Verify
+
+Verifies contract on [etherscan](https://etherscan.io)
+
+`solt verify [output.json] [contract address] [contract name in output-file] [--compiler solc-version]`
+
+Required flags:
+* `--compiler` `-c` [string] the compiler version used, e.g. 'v0.6.12'
+
+Optional flags:
+* `--license` `-l` [string] License according to etherscan, valid codes 1-12 where 1=No License .. 12=Apache 2.0, see https://etherscan.io/contract-license-types
+* `--network` `-n` [string] The network name [rinkeby, kovan etc], defaults to mainnet
+* `--infura` [string] Optional infura API key (if the shared one is rate limited)
+* `--etherscan` [string] Optional etherscan API Key (if the shared one is rate limited)
+* `--help` `-h` Usage info
+
+### Usage example
+
+1. Generate `standard-json` input format
+
 ```bash
-wget https://github.com/hjubb/solt/releases/download/v0.3.0/solc-sjw-macos-x64 -O ~/.local/bin/solc-sjw
-chmod +x ~/.local/bin/solc-sjw
+git clone https://github.com/MainframeHQ/mainframe-lending-protocol.git /tmp/example
+cd /tmp/example
+npm install # installs node dependencies as mainframe uses openzepplin contracts
+
+solt write contracts --npm
+
+# solc-input-contracts.json is generated
 ```
 
-### Usage
-`solc-sjw --dir [base-directory] [--no-optimization] [--runs num] [--ignore-ext extension to ignore] [--truffle]`
+2. Verify on etherscan
 
-where
-* `--dir` `-d` *(required)* is the base directory
-* `--no-optimization` `-no-opt` *(optional)* flag for whether to exclude optimization in the output
-* `--runs` `-r` *(optional)* number of optimization runs, only used when optimizing, by default 200
-* `--ignore-ext` `-i` *(optional)* ignore files with the file extension, by default `.t.sol`
-* `--truffle` *(optional)* attempts to resolve npm installed dependencies referenced by your contracts
+```bash
+solt verify solc-input-contracts.json <deployed address> <contract name>
 
+# You can obtain your contract name using the following command
+# $ cat solc-input-contracts.json | jq .sources | jq 'keys'
+```
 
-### Context
-
-CLI tool to help you generate a `solc --standard-json` compatible file to **deterministically** verify deployed contracts on [etherscan](https://etherscan.io).
-
-### Why does this exist?
+## Why does this exist?
 
 Flattening your solidity code before verifying them on etherscan [is not recommended](https://twitter.com/ethchris/status/1296121526601875456). Yet it seems to be the most common approach for verification on etherscan.
 
@@ -38,17 +77,14 @@ While this is fine for small projects, you run into weird edge cases where flatt
 
 One approach that has worked consistently was using the [compiler standard-json](https://solidity.readthedocs.io/en/v0.6.12/using-the-compiler.html#compiler-input-and-output-json-description) input method, which is also [used by buidler](https://github.com/nomiclabs/buidler/pull/416) behind the scenes.
 
-`solc-sjw` was built as we wanted a static-binary that could:
+`solt` was built as we wanted a static-binary that could:
 
 1. Generate a `standard-json` file for `solc`
 2. Be configured without any `.config.js` file
+3. Programmatically obtain the abi encoded constructor args to ease the etherscan verification process
 
-### How can I verify my contracts?
+## Sponsor
 
-Simply download the binary, make it executable and run:
+Did `solt` save you engineering time? Any donations will be greatly appreciated!
 
-```bash
-solc-sjw --dir <contracts-dir>
-```
-
-A new file called `solc-input.json` should appear. You can upload this file to [etherscan](https://etherscan.io) and verify it via the `standard json-input` method.
+[:heart: Sponsor](https://github.com/sponsors/hjubb)
