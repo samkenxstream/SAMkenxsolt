@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.hjubb"
-val versionString = "0.5.1"
+val versionString = "0.5.2"
 version = versionString
 
 val binomVersion = "0.1.22"
@@ -54,7 +54,7 @@ kotlin {
         val linuxX64Main by getting
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
                 api("pw.binom.io:file:$binomVersion")
                 api("pw.binom.io:core:$binomVersion")
