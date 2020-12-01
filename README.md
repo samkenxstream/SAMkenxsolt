@@ -11,13 +11,13 @@ CLI tool to help you do two things:
 
 ### Linux
 ```bash
-wget https://github.com/hjubb/solt/releases/download/v0.5.0/solt-linux-x64 -O ~/.local/bin/solt
+wget https://github.com/hjubb/solt/releases/download/v0.5.2/solt-linux-x64 -O ~/.local/bin/solt
 chmod +x ~/.local/bin/solt
 ```
 
 ### Mac
 ```bash
-wget https://github.com/hjubb/solt/releases/download/v0.5.0/solt-mac -O ~/.local/bin/solt
+wget https://github.com/hjubb/solt/releases/download/v0.5.2/solt-mac -O ~/.local/bin/solt
 chmod +x ~/.local/bin/solt
 ```
 
