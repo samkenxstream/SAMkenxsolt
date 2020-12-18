@@ -36,6 +36,8 @@ Optional flags
 * `--output` [string] Output file name (defaults to solc-input-[file].json)
 * `--help` `-h` Usage info
 
+Note that you are expected to run this from the root of your Solidity project. That is, from the same directory where "node_modules" can be found. Otherwise, certain features like the `--npm` flag will not work.
+
 ### Verify
 
 Verifies contract on [etherscan](https://etherscan.io)
@@ -59,7 +61,7 @@ Optional flags:
 ```bash
 git clone https://github.com/MainframeHQ/mainframe-lending-protocol.git /tmp/example
 cd /tmp/example
-npm install # installs node dependencies as mainframe uses openzepplin contracts
+yarn install # installs node dependencies
 
 solt write contracts --npm
 
