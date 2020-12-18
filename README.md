@@ -61,7 +61,7 @@ Optional flags:
 ```bash
 git clone https://github.com/MainframeHQ/mainframe-lending-protocol.git /tmp/example
 cd /tmp/example
-npm install # installs node dependencies as mainframe uses openzepplin contracts
+yarn install # installs node dependencies
 
 solt write contracts --npm
 
