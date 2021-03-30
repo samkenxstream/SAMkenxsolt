@@ -2,8 +2,8 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec
 import com.codingfeline.buildkonfig.gradle.BuildKonfigExtension
 
 plugins {
-    kotlin("multiplatform") version "1.4.10"
-    kotlin("plugin.serialization") version "1.4.10"
+    kotlin("multiplatform") version "1.4.32"
+    kotlin("plugin.serialization") version "1.4.32"
     id("com.codingfeline.buildkonfig") version "0.7.0"
 }
 
@@ -11,9 +11,9 @@ group = "com.github.hjubb"
 val versionString = "0.5.2"
 version = versionString
 
-val binomVersion = "0.1.22"
-val ktor_version = "1.4.1"
-val coroutineVersion = "1.3.9-native-mt-2"
+val binomVersion = "0.1.28"
+val ktor_version = "1.5.2"
+val coroutineVersion = "1.4.3-native-mt"
 
 repositories {
     mavenCentral()
@@ -54,7 +54,7 @@ kotlin {
         val linuxX64Main by getting
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.2")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
                 api("pw.binom.io:file:$binomVersion")
                 api("pw.binom.io:core:$binomVersion")
